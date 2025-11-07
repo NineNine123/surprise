@@ -103,6 +103,20 @@
         animation: fall linear infinite;
         z-index: 99;
       }
+      #catch-text {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: clamp(1.8rem, 8vw, 4rem); /* ✅ fits phones & still big */
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow: 3px 3px 0px #ff6b6b, 6px 6px 0px #feca57;
+        letter-spacing: 2px;
+        z-index: 200;
+        pointer-events: none; /* ✅ does not block tapping */
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
 
       @keyframes fall {
         to {
@@ -114,6 +128,8 @@
   </head>
   <body>
     <div id="score">Caught: <span id="count">0</span></div>
+    <div id="catch-text">CATCH ME!</div>
+
     <div id="cat"></div>
     <div id="message">you stupid ugly grandma 🐾</div>
     <button id="restart">Play Again!</button>
