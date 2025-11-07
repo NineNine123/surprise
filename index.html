@@ -1,244 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catch Me! 👵</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ninja Cat Dash ⚡🐱</title>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
 
-      body {
-        height: 100vh;
-        overflow: hidden;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        font-family: "Comic Sans MS", cursive, sans-serif;
-        cursor: crosshair;
-        user-select: none;
-      }
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      #cat {
-        position: absolute;
-        width: 80px;
-        height: 80px;
-        background: url("https://raw.githubusercontent.com/ninenine123/surprise/main/cat.png")
-          no-repeat center/contain;
-        transition: none;
-        z-index: 10;
-        pointer-events: auto;
-      }
+  body {
+    background: radial-gradient(circle at top center, #ff9a9e, #fad0c4);
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+  }
 
-      #message {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: clamp(1.4rem, 6vw, 2.8rem);
-        font-weight: 800;
-        font-family: "Poppins", sans-serif; /* ✅ Clear font */
-        color: #ffffff;
-        text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5),
-          0px 0px 10px rgba(0, 0, 0, 0.4);
-        opacity: 0;
-        pointer-events: none;
-        z-index: 100;
-        white-space: nowrap;
-      }
+  #title {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(1.6rem, 7vw, 3rem);
+    font-weight: 900;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+    z-index: 50;
+    pointer-events: none;
+  }
 
-      #score {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: clamp(0.8rem, 3.5vw, 1.2rem);
-        color: white;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 10px 15px;
-        border-radius: 20px;
-        z-index: 50;
-      }
+  #cat {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    background: url('https://raw.githubusercontent.com/ninenine123/surprise/main/cat.png') center/contain no-repeat;
+    transition: transform 0.1s;
+    z-index: 20;
+  }
 
-      #restart {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 12px 30px;
-        font-size: clamp(1rem, 4vw, 1.3rem);
-        background: #ff6b6b;
-        color: white;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s;
-        z-index: 100;
-      }
+  #scoreBox {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    color: white;
+    z-index: 60;
+  }
 
-      #restart:hover {
-        background: #ff5252;
-        transform: translateX(-50%) scale(1.1);
-      }
+  #message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(1.8rem, 7vw, 3.5rem);
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 3px 3px 10px rgba(0,0,0,0.7);
+    opacity: 0;
+    z-index: 100;
+  }
 
-      @keyframes bounce {
-        0% {
-          transform: translate(-50%, -50%) scale(0.5);
-          opacity: 0;
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.2);
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-          opacity: 1;
-        }
-      }
+  #restart {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 30px;
+    font-size: clamp(1rem, 5vw, 1.4rem);
+    background: #ff4757;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 100;
+  }
 
-      .confetti {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: #feca57;
-        animation: fall linear infinite;
-        z-index: 99;
-      }
-      #catch-text {
-        position: absolute;
-        top: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: clamp(1.4rem, 6vw, 3rem);
-        font-weight: 800;
-        font-family: "Poppins", sans-serif; /* ✅ Clear font */
-        color: #ffffff;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
-        letter-spacing: 1px;
-        z-index: 200;
-        pointer-events: none;
-      }
+  #restart:hover { background: #e84118; transform: translateX(-50%) scale(1.1); }
+</style>
 
-      @keyframes fall {
-        to {
-          transform: translateY(100vh) rotate(720deg);
-          opacity: 0;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="score">Caught: <span id="count">0</span></div>
-    <div id="catch-text">CATCH ME!</div>
+</head>
+<body>
 
-    <div id="cat"></div>
-    <div id="message">you stupid ugly grandma 👵</div>
-    <button id="restart">Play Again!</button>
+<div id="title">NINJA CAT DASH ⚡🐱</div>
 
-    <script>
-      const cat = document.getElementById("cat");
-      const message = document.getElementById("message");
-      const restartBtn = document.getElementById("restart");
-      const scoreDisplay = document.getElementById("count");
+<div id="scoreBox">Score: <span id="score">0</span></div>
 
-      let score = 0;
-      let isGameActive = true;
+<div id="cat"></div>
 
-      // Starting position
-      let x = 100;
-      let y = 120;
+<div id="message">GOTCHA! ⚡🐱</div>
 
-      // Speed (increase for faster on phone)
-      let vx = 4; // horizontal speed
-      let vy = 3.4; // vertical speed
+<button id="restart">PLAY AGAIN</button>
 
-      // Cat size
-      const catSize = 80; // px
+<script>
+  const cat = document.getElementById('cat');
+  const scoreText = document.getElementById('score');
+  const msg = document.getElementById('message');
+  const btnRestart = document.getElementById('restart');
 
-      // Smooth continuous movement
-      function move() {
-        if (!isGameActive) return;
+  let x = 150, y = 200;
+  let vx = 3.2, vy = 2.5;  // base speed
+  let dashBoost = 1.8;     // extra fast bursts
+  let active = true;
+  let score = 0;
 
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+  function move() {
+    if (!active) return;
 
-        x += vx;
-        y += vy;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-        // Bounce off edges
-        if (x <= 0 || x + catSize >= w) vx = -vx;
-        if (y <= 0 || y + catSize >= h) vy = -vy;
+    x += vx;
+    y += vy;
 
-        cat.style.left = x + "px";
-        cat.style.top = y + "px";
+    // bounce
+    if (x <= 0 || x + 110 >= w) vx = -vx;
+    if (y <= 0 || y + 110 >= h) vy = -vy;
 
-        requestAnimationFrame(move);
-      }
+    // random dash bursts
+    if (Math.random() < 0.016) {
+      vx *= dashBoost;
+      vy *= dashBoost;
 
-      // Tap / click to catch
-      cat.addEventListener("click", () => {
-        if (!isGameActive) return;
+      // short burst then return to normal
+      setTimeout(() => {
+        vx /= dashBoost;
+        vy /= dashBoost;
+      }, 250);
+    }
 
-        score++;
-        scoreDisplay.textContent = score;
-        isGameActive = false;
-        cat.style.transform = "scale(1.5)";
+    cat.style.left = x + "px";
+    cat.style.top = y + "px";
 
-        message.style.opacity = 1;
-        cat.style.pointerEvents = "none";
+    requestAnimationFrame(move);
+  }
 
-        createConfetti();
+  // On catch
+  cat.addEventListener('click', () => {
+    if (!active) return;
+    active = false;
 
-        setTimeout(() => {
-          restartBtn.style.opacity = 1;
-          restartBtn.style.pointerEvents = "auto";
-        }, 1200);
-      });
+    score++;
+    scoreText.textContent = score;
 
-      restartBtn.addEventListener("click", () => {
-        message.style.opacity = 0;
-        restartBtn.style.opacity = 0;
-        restartBtn.style.pointerEvents = "none";
-        cat.style.transform = "scale(1)";
+    cat.style.transform = "scale(1.6) rotate(12deg)";
+    msg.style.opacity = 1;
 
-        cat.style.pointerEvents = "auto";
-        isGameActive = true;
+    setTimeout(() => {
+      btnRestart.style.opacity = 1;
+      btnRestart.style.pointerEvents = "auto";
+    }, 1000);
+  });
 
-        // Restart from random location
-        x = Math.random() * (window.innerWidth - catSize);
-        y = Math.random() * (window.innerHeight - catSize);
+  // Restart
+  btnRestart.addEventListener('click', () => {
+    msg.style.opacity = 0;
+    btnRestart.style.opacity = 0;
+    btnRestart.style.pointerEvents = "none";
 
-        move();
-      });
+    // reset size + reposition
+    cat.style.transform = "scale(1)";
+    x = Math.random() * (window.innerWidth - 130);
+    y = Math.random() * (window.innerHeight - 130);
 
-      // Confetti effect
-      function createConfetti() {
-        for (let i = 0; i < 50; i++) {
-          const confetti = document.createElement("div");
-          confetti.className = "confetti";
-          confetti.style.left = Math.random() * 100 + "vw";
-          confetti.style.background = [
-            "#ff6b6b",
-            "#feca57",
-            "#48dbfb",
-            "#1dd1a1",
-          ][Math.floor(Math.random() * 4)];
-          confetti.style.animationDuration = Math.random() * 3 + 2 + "s";
-          confetti.style.animationDelay = Math.random() * 0.5 + "s";
-          document.body.appendChild(confetti);
+    active = true;
+    move();
+  });
 
-          setTimeout(() => confetti.remove(), 5000);
-        }
-      }
+  move();
+</script>
 
-      // Start
-      move();
-    </script>
-  </body>
+</body>
 </html>
