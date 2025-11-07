@@ -198,6 +198,9 @@
       (function () {
         const stage = document.getElementById("stage");
         const cat = document.getElementById("cat");
+        let catX = 100;
+        let catY = 100;
+
         const bubble = document.getElementById("bubble");
         const confetti = document.getElementById("confetti");
         const resetBtn = document.getElementById("reset");
@@ -220,15 +223,25 @@
           cat.style.transform = `translate(${to.x}px, ${to.y}px)`;
         }
 
-        function hop() {
+        let vx = 2.2; // horizontal speed (increase for faster)
+        let vy = 1.6; // vertical speed (increase for faster)
+
+        function continuousMove() {
           if (caught) return;
-          moveCat(randomPos());
+
+          const r = stage.getBoundingClientRect();
+          const rect = cat.getBoundingClientRect();
+
+          // bounce off edges
+          if (rect.left <= r.left || rect.right >= r.right) vx = -vx;
+          if (rect.top <= r.top + 40 || rect.bottom >= r.bottom) vy = -vy;
+
+          cat.style.transform = `translate(${(catX += vx)}px, ${(catY +=
+            vy)}px)`;
+
+          requestAnimationFrame(continuousMove);
         }
 
-        function startAutoMove() {
-          stopAutoMove();
-          mover = setInterval(hop, 2500);
-        }
         function stopAutoMove() {
           if (mover) clearInterval(mover), (mover = null);
         }
@@ -243,12 +256,10 @@
           if (d < 70) hop();
         }
 
-        // Catch!
         function catchCat() {
           if (caught) return;
           caught = true;
-          stopAutoMove();
-          bubble.textContent = pickWinMessage(); // <<< your win message here
+          bubble.textContent = pickWinMessage();
           cat.style.boxShadow = "0 10px 30px rgba(16,185,129,.5)";
           burstConfetti();
           resetBtn.hidden = false;
@@ -306,19 +317,9 @@
         });
 
         // Make it dodge the pointer
-        stage.addEventListener("mousemove", runAway);
-        stage.addEventListener(
-          "touchmove",
-          (e) => {
-            const t = e.touches[0];
-            if (t) runAway({ clientX: t.clientX, clientY: t.clientY });
-          },
-          { passive: true }
-        );
 
         // Initial placement
-        moveCat(randomPos());
-        startAutoMove();
+        continuousMove();
 
         resetBtn.addEventListener("click", resetGame);
         window.addEventListener("resize", () => {
