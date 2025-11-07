@@ -108,13 +108,13 @@
         top: 12px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: clamp(1.8rem, 8vw, 4rem); /* ✅ fits phones & still big */
+        font-size: clamp(1.2rem, 6vw, 2.8rem); /* ✅ smaller + responsive */
         font-weight: 900;
-        color: #ffffff;
-        text-shadow: 3px 3px 0px #ff6b6b, 6px 6px 0px #feca57;
-        letter-spacing: 2px;
+        color: #ffffff; /* ✅ pure white */
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6); /* ✅ darker shadow = super clear */
+        letter-spacing: 1px;
         z-index: 200;
-        pointer-events: none; /* ✅ does not block tapping */
+        pointer-events: none;
         font-family: "Comic Sans MS", cursive, sans-serif;
       }
 
