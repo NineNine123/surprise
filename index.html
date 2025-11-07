@@ -1,101 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Surprise Button</title>
-  <style>
-    :root {
-      --bg: linear-gradient(135deg,#f7f1ff,#d9f7ff);
-      --card: #ffffff;
-      --accent: #6b46c1;
-      --accent-2: #00a3e0;
-    }
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-    body{
-      display:flex;align-items:center;justify-content:center;
-      background:var(--bg);
-    }
-    .card{
-      width:90%;
-      max-width:520px;
-      padding:36px;
-      border-radius:18px;
-      background:var(--card);
-      box-shadow:0 8px 30px rgba(0,0,0,0.12);
-      text-align:center;
-    }
-    h1{margin:0 0 12px;font-size:20px;color:#222;}
-    p{margin:0 0 20px;color:#444;}
-    button.primary{
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:white;border:0;padding:16px 22px;border-radius:12px;
-      font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(107,70,193,0.28);
-    }
-    .surprise{
-      margin-top:22px;
-      font-size:18px;
-      min-height:40px;
-      display:flex;align-items:center;justify-content:center;
-      gap:10px;
-    }
-    .emoji{font-size:28px}
-    .small{font-size:13px;color:#666;margin-top:14px}
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h1>Click for a Surprise</h1>
-    <p>Share this link with a friend — a little harmless prank awaits. 😄</p>
-
-    <button id="surpriseBtn" class="primary">Click here to see a surprise</button>
-
-    <div id="output" class="surprise" aria-live="polite"></div>
-    <div class="small">Tip: change the message inside the script if you want a different surprise.</div>
-  </div>
-
-  <script>
-    // EDIT THIS: change the messages to any funny/harmless lines you like.
-    const messages = [
-      {emoji:"🎉", text:"Gotcha! You're the real surprise!"},
-      {emoji:"😆", text:"Haha — served with love!"},
-      {emoji:"✨", text:"You're awesome — never forget that!"},
-      {emoji:"🤭", text:"Why did you click? Now you know!"},
-      {emoji:"💖", text:"Smile! You brightened my day."}
-    ];
-
-    // If you specifically want to show ONE message always, change showRandom = false
-    const showRandom = true;
-
-    const btn = document.getElementById('surpriseBtn');
-    const out = document.getElementById('output');
-
-    function pickMessage() {
-      if (showRandom) {
-        return messages[Math.floor(Math.random() * messages.length)];
-      } else {
-        return messages[0];
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Catch the Cat!</title>
+    <style>
+      :root {
+        --bg1: #fef6ff;
+        --bg2: #e8f7ff;
+        --card: #fff;
+        --ink: #1f2937;
+        --accent: #7c3aed;
       }
-    }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      }
+      body {
+        background: radial-gradient(
+            1200px 800px at 20% 0%,
+            var(--bg1),
+            #fff 40%
+          ),
+          radial-gradient(1200px 800px at 100% 100%, var(--bg2), #fff 40%);
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stage {
+        position: relative;
+        width: min(900px, 92vw);
+        height: min(70vh, 560px);
+        border-radius: 24px;
+        background: var(--card);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+      }
+      .hud {
+        position: absolute;
+        inset: 14px auto auto 14px;
+        background: rgba(0, 0, 0, 0.04);
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+      .cta {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        padding: 10px 14px;
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        background: #111;
+        color: #fff;
+      }
 
-    // Fun little animation when button clicked
-    btn.addEventListener('click', () => {
-      out.textContent = ""; // clear
-      btn.disabled = true;
-      btn.textContent = "Revealing...";
-      setTimeout(() => {
-        const msg = pickMessage();
-        out.innerHTML = `<span class="emoji">${msg.emoji}</span><strong>${msg.text}</strong>`;
-        btn.textContent = "Click again";
-        btn.disabled = false;
-      }, 700); // short suspense
-    });
+      /* Cat */
+      #cat {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+        touch-action: none;
+        transition: transform 0.38s cubic-bezier(0.22, 0.8, 0.22, 1),
+          box-shadow 0.2s;
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.28);
+      }
+      /* Cute gradient body */
+      #cat::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(
+            60px 60px at 35% 35%,
+            #fff,
+            rgba(255, 255, 255, 0.4)
+          ),
+          conic-gradient(
+            from 120deg,
+            #ffde9e,
+            #ffd3e4,
+            #c6e7ff,
+            #c1ffe0,
+            #ffde9e
+          );
+        filter: saturate(1.1);
+      }
+      .sprite {
+        position: relative;
+        font-size: 42px;
+        z-index: 1;
+        transform: translateY(-2px);
+      }
+      .bubble {
+        position: absolute;
+        left: 50%;
+        top: -52px;
+        transform: translateX(-50%);
+        background: #111;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 14px;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+      .bubble::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+        transform: translateX(-50%);
+        border: 8px solid transparent;
+        border-top-color: #111;
+      }
+      .wiggle {
+        animation: wiggle 1s infinite;
+      }
+      @keyframes wiggle {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(-6deg);
+        }
+        60% {
+          transform: rotate(6deg);
+        }
+      }
 
-    // Optional: allow pressing Enter to click
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') btn.click();
-    });
-  </script>
-</body>
+      /* Confetti */
+      .confetti {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .confetti span {
+        position: absolute;
+        font-size: 18px;
+        animation: fall 900ms ease-out forwards;
+      }
+      @keyframes fall {
+        from {
+          transform: translateY(0) rotate(0);
+        }
+        to {
+          transform: translateY(260px) rotate(340deg);
+          opacity: 0.2;
+        }
+      }
+
+      .footer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 8px;
+        text-align: center;
+        font-size: 12px;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <div class="hud">Catch the cat! Tip: click/tap fast 🐾</div>
+      <button class="cta" id="reset" hidden>Play again</button>
+
+      <div id="cat" role="button" aria-label="Catch the cat" tabindex="0">
+        <div class="bubble" id="bubble">Catch me!</div>
+        <div class="sprite wiggle">🐱</div>
+      </div>
+
+      <div class="confetti" id="confetti"></div>
+      <div class="footer">made with 💖 & vanilla JS</div>
+    </div>
+
+    <script>
+      (function () {
+        const stage = document.getElementById("stage");
+        const cat = document.getElementById("cat");
+        const bubble = document.getElementById("bubble");
+        const confetti = document.getElementById("confetti");
+        const resetBtn = document.getElementById("reset");
+
+        let caught = false;
+        let mover = null;
+
+        // place cat at a random position within bounds
+        function randomPos() {
+          const r = stage.getBoundingClientRect();
+          const cw = cat.offsetWidth,
+            ch = cat.offsetHeight;
+          const pad = 8;
+          const x = Math.random() * (r.width - cw - pad * 2) + pad;
+          const y = Math.random() * (r.height - ch - pad * 2) + pad + 20; // avoid HUD
+          return { x, y };
+        }
+
+        function moveCat(to) {
+          cat.style.transform = `translate(${to.x}px, ${to.y}px)`;
+        }
+
+        function hop() {
+          if (caught) return;
+          moveCat(randomPos());
+        }
+
+        function startAutoMove() {
+          stopAutoMove();
+          mover = setInterval(hop, 2500);
+        }
+        function stopAutoMove() {
+          if (mover) clearInterval(mover), (mover = null);
+        }
+
+        // Run away when cursor gets too close
+        function runAway(e) {
+          if (caught) return;
+          const rect = cat.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const d = Math.hypot((e.clientX || 0) - cx, (e.clientY || 0) - cy);
+          if (d < 70) hop();
+        }
+
+        // Catch!
+        function catchCat() {
+          if (caught) return;
+          caught = true;
+          stopAutoMove();
+          bubble.textContent = pickWinMessage(); // <<< your win message here
+          cat.style.boxShadow = "0 10px 30px rgba(16,185,129,.5)";
+          burstConfetti();
+          resetBtn.hidden = false;
+        }
+
+        // Messages shown when caught – edit if you like
+        const winLines = [
+          "You caught me! You're quick 😺",
+          "Fast paws! Nice catch 🐾",
+          "Winner! Cat-chieved! ✨",
+          "Gotcha! You're awesome 🎉",
+        ];
+        function pickWinMessage() {
+          return winLines[Math.floor(Math.random() * winLines.length)];
+        }
+
+        // Confetti burst using emoji
+        function burstConfetti() {
+          confetti.innerHTML = "";
+          const bits = "🎉✨💫🧡💛💙".split("");
+          const r = stage.getBoundingClientRect();
+          for (let i = 0; i < 28; i++) {
+            const s = document.createElement("span");
+            s.textContent = bits[i % bits.length];
+            const x = r.width / 2 - 20 + (Math.random() * 120 - 60);
+            const y = r.height / 2 - 40 + (Math.random() * 40 - 20);
+            s.style.left = x + "px";
+            s.style.top = y + "px";
+            s.style.animationDelay = Math.random() * 0.25 + "s";
+            confetti.appendChild(s);
+          }
+        }
+
+        function resetGame() {
+          caught = false;
+          bubble.textContent = "Catch me!";
+          cat.style.boxShadow = "0 10px 30px rgba(124,58,237,.28)";
+          resetBtn.hidden = true;
+          hop();
+          startAutoMove();
+        }
+
+        // Accessibility: keyboard/touch
+        cat.addEventListener("click", catchCat);
+        cat.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault();
+            catchCat();
+          },
+          { passive: false }
+        );
+        cat.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") catchCat();
+        });
+
+        // Make it dodge the pointer
+        stage.addEventListener("mousemove", runAway);
+        stage.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            if (t) runAway({ clientX: t.clientX, clientY: t.clientY });
+          },
+          { passive: true }
+        );
+
+        // Initial placement
+        moveCat(randomPos());
+        startAutoMove();
+
+        resetBtn.addEventListener("click", resetGame);
+        window.addEventListener("resize", () => {
+          if (!caught) hop();
+        });
+      })();
+    </script>
+  </body>
 </html>
-
