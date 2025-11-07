@@ -36,10 +36,11 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: clamp(1.8rem, 6vw, 3.5rem); /* ✅ fits all screen sizes */
-        font-weight: bold;
-        color: #ff6b6b;
-        text-shadow: 4px 4px 0px #fff, 8px 8px 0px #feca57;
+        font-size: clamp(1.5rem, 6vw, 3rem); /* ✅ fits phone */
+        font-weight: 900;
+        color: #ffffff; /* ✅ clear white */
+        text-shadow: 3px 3px 0px #ff6b6b,
+          /* outline */ 6px 6px 12px rgba(0, 0, 0, 0.5); /* soft shadow */
         opacity: 0;
         pointer-events: none;
         z-index: 100;
