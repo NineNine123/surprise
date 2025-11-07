@@ -124,63 +124,78 @@
       const message = document.getElementById("message");
       const restartBtn = document.getElementById("restart");
       const scoreDisplay = document.getElementById("count");
+
       let score = 0;
       let isGameActive = true;
 
-      // Move cat randomly
-      function moveCat() {
+      // Starting position
+      let x = 100;
+      let y = 120;
+
+      // Speed (increase for faster on phone)
+      let vx = 2.2; // horizontal speed
+      let vy = 1.8; // vertical speed
+
+      // Cat size
+      const catSize = 80; // px
+
+      // Smooth continuous movement
+      function move() {
         if (!isGameActive) return;
 
-        const maxX =
-          window(innerWidth || document.documentElement.clientWidth) - 80;
-        const maxY =
-          window(innerHeight || document.documentElement.clientHeight) - 80;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+        x += vx;
+        y += vy;
+
+        // Bounce off edges
+        if (x <= 0 || x + catSize >= w) vx = -vx;
+        if (y <= 0 || y + catSize >= h) vy = -vy;
 
         cat.style.left = x + "px";
         cat.style.top = y + "px";
 
-        setTimeout(moveCat, Math.random() * 1500 + 800); // Move every 0.8–2.3s
+        requestAnimationFrame(move);
       }
 
-      // Cat click event
-      cat.addEventListener("click", function (e) {
+      // Tap / click to catch
+      cat.addEventListener("click", () => {
         if (!isGameActive) return;
 
-        e.stopPropagation();
         score++;
         scoreDisplay.textContent = score;
-
-        // Show message
-        message.style.opacity = 1;
         isGameActive = false;
+
+        message.style.opacity = 1;
         cat.style.pointerEvents = "none";
 
-        // Confetti effect
         createConfetti();
 
-        // Show restart button
         setTimeout(() => {
           restartBtn.style.opacity = 1;
           restartBtn.style.pointerEvents = "auto";
-        }, 1500);
+        }, 1200);
       });
 
-      // Restart game
       restartBtn.addEventListener("click", () => {
         message.style.opacity = 0;
         restartBtn.style.opacity = 0;
         restartBtn.style.pointerEvents = "none";
+
         cat.style.pointerEvents = "auto";
         isGameActive = true;
-        moveCat();
+
+        // Restart from random location
+        x = Math.random() * (window.innerWidth - catSize);
+        y = Math.random() * (window.innerHeight - catSize);
+
+        move();
       });
 
-      // Create confetti
+      // Confetti effect
       function createConfetti() {
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
           const confetti = document.createElement("div");
           confetti.className = "confetti";
           confetti.style.left = Math.random() * 100 + "vw";
@@ -198,19 +213,8 @@
         }
       }
 
-      // Start the game
-      moveCat();
-
-      // Optional: Click anywhere to taunt (fun!)
-      document.body.addEventListener("click", () => {
-        if (isGameActive) {
-          // Cat "dodges" slightly when you miss
-          const currentX = parseFloat(cat.style.left) || 0;
-          const currentY = parseFloat(cat.style.top) || 0;
-          cat.style.left = currentX + (Math.random() > 0.5 ? 30 : -30) + "px";
-          cat.style.top = currentY + (Math.random() > 0.5 ? 30 : -30) + "px";
-        }
-      });
+      // Start
+      move();
     </script>
   </body>
 </html>
